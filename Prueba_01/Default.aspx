@@ -17,7 +17,7 @@
             <asp:Label ID="Label1" runat="server" Text="PRUEBA 01"></asp:Label>
             <br />
             <asp:Button ID="Button1" runat="server" Text="Button" />
-            Protected sub Button
+
         </div>
     </form>
 </body>
