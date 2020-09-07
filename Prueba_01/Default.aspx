@@ -18,6 +18,9 @@
             <br />
             <asp:Button ID="Button1" runat="server" Text="Button" />
 
+            <br />
+            <asp:TextBox ID="TextBox1" runat="server"></asp:TextBox>
+
         </div>
     </form>
 </body>
