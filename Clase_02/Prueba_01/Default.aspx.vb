@@ -10,6 +10,8 @@
     End Sub
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-        Label2.Text = DateTime.Now.ToString("hh:mm:ss") & "Esta hora es del Page Load"
+        If Not IsPostBack Then
+            Label2.Text = DateTime.Now.ToString("hh:mm:ss") & "Esta hora es del Page Load"
+        End If
     End Sub
 End Class
