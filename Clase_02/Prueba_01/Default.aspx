@@ -9,6 +9,7 @@
 <body>
     <form id="form1" runat="server">
         <div>
+            <asp:Label ID="Label2" runat="server" Text="Hora"></asp:Label>
             <br />
             <br />
             <br />
