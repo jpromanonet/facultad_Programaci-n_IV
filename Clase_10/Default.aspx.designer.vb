@@ -554,6 +554,15 @@ Partial Public Class _Default
     Protected WithEvents btnAbmProductos As Global.System.Web.UI.WebControls.ImageButton
 
     '''<summary>
+    '''Control btnAbmUsuariosMenu.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents btnAbmUsuariosMenu As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
     '''Control btnHacerPedidoFabrica.
     '''</summary>
     '''<remarks>
@@ -1641,4 +1650,238 @@ Partial Public Class _Default
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
     Protected WithEvents btnTerminarVolverAbmFabrica As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''Control pnlAbmUsuariosMenu.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents pnlAbmUsuariosMenu As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''Control btnAbmUsuarios.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents btnAbmUsuarios As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''Control btnAbmUsuariosAdmin.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents btnAbmUsuariosAdmin As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''Control bntTerminarMenuUsuarios.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents bntTerminarMenuUsuarios As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''Control pnlAbmUsuarios.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents pnlAbmUsuarios As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''Control lblTipoUsuarios.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents lblTipoUsuarios As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''Control txtUsuarioFiltrar.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents txtUsuarioFiltrar As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''Control btnFiltrarUsuario.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents btnFiltrarUsuario As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''Control lblErrorAbmUsuarios.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents lblErrorAbmUsuarios As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''Control gvAbmUsuarios.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents gvAbmUsuarios As Global.System.Web.UI.WebControls.GridView
+
+    '''<summary>
+    '''Control btnActulizarAbmUsuarios.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents btnActulizarAbmUsuarios As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''Control btnTerminarAbmUsuarios.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents btnTerminarAbmUsuarios As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''Control pnlMotivo.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents pnlMotivo As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''Control lblAccionMotivo.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents lblAccionMotivo As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''Control lblUsuarioAccion.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents lblUsuarioAccion As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''Control lblEmailAccion.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents lblEmailAccion As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''Control txtMotivo.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents txtMotivo As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''Control lblErrorMotivo.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents lblErrorMotivo As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''Control btnConfirmarAbmUsuarios.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents btnConfirmarAbmUsuarios As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''Control btnCancelarAbmUsuarios.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents btnCancelarAbmUsuarios As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''Control pnlValidarMail.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents pnlValidarMail As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''Control txtValidar.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents txtValidar As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''Control lblErrorCodidoValidar.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents lblErrorCodidoValidar As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''Control btnValidarCodigo.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents btnValidarCodigo As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''Control btnRegresarRegistro.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents btnRegresarRegistro As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''Control btnCancelarRegistro.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents btnCancelarRegistro As Global.System.Web.UI.WebControls.ImageButton
 End Class

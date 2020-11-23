@@ -40,7 +40,7 @@ Public Class _Default
     End Sub
 
     Protected Sub btnReenviarClave_Click(sender As Object, e As ImageClickEventArgs) Handles btnReenviarClave.Click
-
+        recuperarClave()
     End Sub
 
     Protected Sub btnIrLogin_Click(sender As Object, e As ImageClickEventArgs) Handles btnIrLogin.Click
@@ -176,6 +176,7 @@ Public Class _Default
         Session("Password") = txtClaveU.Text
         Session("TipoDocumento") = ddlTipoDocU.SelectedValue.Trim
         Session("Documento") = txtDocU.Text.Trim
+        Session("Email") = txtEmailU.Text.Trim
         'Comprobamos si Existe en la DB
         If YaExisteSql("SELECT idusuario FROM usuarios WHERE usuario='" & Session("Usuario") & "'") Then
             ok = False
@@ -186,6 +187,11 @@ Public Class _Default
             ok = False
             lblErrorDocU.Text = "Ya existe el " & Session("TipoDocumento") & " " & Session("Documento") & "."
             lblErrorDocU.Visible = True
+        End If
+        If YaExisteSql("SELECT idusuario FROM usuarios WHERE Email='" & Session("Email") & "'") Then
+            ok = False
+            lblErrorEmailU.Text = "El Emial Ingresado ya se Encuentra Registrado."
+            lblErrorEmailU.Visible = True
         End If
         If ok = False Then
             lblErroresU.Text = "Solo se permite una inscripción por persona."
@@ -199,20 +205,19 @@ Public Class _Default
         Session("ApellidoYNombre") = txtNombreU.Text.Trim & " " & txtApellidoU.Text.Trim
         Session("Email") = txtEmailU.Text.Trim
         limpiarErroresRegistroU()
-        'Si pasa la Validacion lo Insertanos en la DB
-        If SqlAccion("INSERT INTO Usuarios (Apellido, Nombre, tDoc , Documento, Usuario, Clave, Email, idProv , Localidad,Domicilio, Telefono, fNacimiento) VALUES ( '" & txtApellidoU.Text.Trim & "','" & txtNombreU.Text.Trim & "', '" & Session("TipoDocumento") & "','" & Session("Documento") & "','" & Session("Usuario") & "', '" & Session("Password") & "' , '" & Session("Email") & "'," & ddlProvU.SelectedValue & ", '" & txtLocalidadU.Text.Trim & "' , '" & txtDireccionU.Text.Trim & "','" & txtTelefonoU.Text.Trim & "','" & FechaNacimiento.ToString("yyyy-MM-dd") & " ' ) ") = False Then
-            lblErroresU.Text = "Se ha producido un error al querer guardar tus datos."
-            lblErroresU.Visible = True
-            Exit Sub
-        End If
-        Session("idUsuario") = Vnum(LeeUnCampo("SELECT TOP 1 idUsuario FROM usuarios WHERE Usuario='" & Session("Usuario") & "'and Clave='" & Session("Password") & "' ", "idUsuario"))
-        lblBienvenido.Text = "Bienvenido " & Session("ApellidoYNombre") & "!!!"
-        Dim mensaje As String, xusuario As String = Session("ApellidoYNombre"), en As String = Chr(13) & Chr(10)
-        mensaje = "Bienvenido " & xusuario & " a los Cursos de ASP .NET!." & en & en & "Te damos una cordial bienvenida al a comunidad de ASP.NET !." & en & en & "Tu usuario es " & " " & Session("Usuario") & " " & en & en & "Tu clave es " & " " & Session("Password") & " " & en & en & "Ya podés loguearte para ver tus datos! !." & en & en
-        limpiarCamposRegistroU()
+        Session("sqlIngreso") = "INSERT INTO Usuarios (Apellido, Nombre, tDoc , Documento, Usuario, Clave, Email, idProv , Localidad,Domicilio, Telefono, fNacimiento) VALUES ( '" & txtApellidoU.Text.Trim & "','" & txtNombreU.Text.Trim & "', '" & Session("TipoDocumento") & "','" & Session("Documento") & "','" & Session("Usuario") & "', '" & Session("Password") & "' , '" & Session("Email") & "'," & ddlProvU.SelectedValue & ", '" & txtLocalidadU.Text.Trim & "' , '" & txtDireccionU.Text.Trim & "','" & txtTelefonoU.Text.Trim & "','" & FechaNacimiento.ToString("yyyy-MM-dd") & " ' ) "
+        Dim codigo As String = crearCodigo(4)
+        Session("codigo") = codigo
+        Dim mensaje As String, en As String = Chr(13) & Chr(10)
+
+        mensaje = "Saludos " & Session("ApellidoYNombre") & "." & en & en & "Te escribimos de sistema ABM, Equipamientos Informaticos, respuesta a tu solicitud de registro como un nuevo usuario de nuestra aplicación. " & en & en & "Por favor, ingresa el código: " & codigo & " en el cuadro de texto de la aplicación Web y presioná Validar. Esto completara tu registro como un Nuevo Usuario de , Equipamientos Informaticos." & en & en & "Felicitaciones" & en & en & "El Equipo de , Equipamientos Informaticos" & en & en & en & en & "(Por favor, no respondas éste mail, es automático... Muchas Gracias.)" & en & en
+
+        Dim okEnviarMail As String = enviarMail(Session("Email"), ", Validar Email", mensaje)
+
+        txtValidar.Text = ""
+        lblErrorCodidoValidar.Visible = False
         pnlRegistrarse.Visible = False
-        pnlBienvenido.Visible = True
-        btnRegistrarseVolverLoginU.Focus()
+        pnlValidarMail.Visible = True
     End Sub
 #End Region
 #Region "Limpiar Campos"
@@ -624,7 +629,7 @@ Public Class _Default
             lblErrorLogin.Visible = True
             Exit Sub
         End If
-        Dim da1 As New SqlDataAdapter("SELECT * FROM " & Session("QueEs") & " WHERE UPPER(LTRIM(RTRIM(usuario)))='" & usu & "' AND LTRIM(RTRIM(clave))='" & pass & "'", con)
+        Dim da1 As New SqlDataAdapter("SELECT * FROM " & Session("QueEs") & " WHERE UPPER(LTRIM(RTRIM(usuario)))='" & usu & "' AND LTRIM(RTRIM(clave))='" & pass & "' AND Activo = 1", con)
         Dim ds1 As New DataSet
         da1.Fill(ds1, "Login")
         If ds1.Tables("Login").Rows.Count = 0 Then
@@ -675,6 +680,7 @@ Public Class _Default
 #Region "Mostrar Botones Segun Tipo de Usuario"
     Sub mostrarBotonesUsuario()
         btnAbmPedidoFabrica.Visible = False
+        btnAbmUsuariosMenu.Visible = False
         btnHacerPedidoFabrica.Visible = True
         btnHacerPedido.Visible = False
         btnVerHistorico.Visible = True
@@ -682,6 +688,7 @@ Public Class _Default
     End Sub
     Sub mostrarBotonesAdmin()
         btnHacerPedidoFabrica.Visible = False
+        btnAbmUsuariosMenu.Visible = True
         btnAbmPedidoFabrica.Visible = True
         btnAbmProductos.Visible = True
         btnHacerPedido.Visible = False
@@ -1172,8 +1179,17 @@ Public Class _Default
             If dataSet.Tables("dato").Rows.Count > 0 Then
                 nPedido = dataSet.Tables("dato").Rows(0)("NPedido")
                 selectPedidosTemporal = "SELECT Pedidos_Temporal.Item, Pedidos_Temporal.Cantidad, " & nPedido & " AS NPedido FROM Pedidos_Temporal WHERE Num_Cli=" & idUsuario
+
                 If SqlAccion(insertPedidosDetalle & selectPedidosTemporal) = True Then
                     lblPedidoCreado.Text = "El Pedido Nº " & nPedido & ", fue Creado Correctamente."
+                    Dim dataAdapterMail As New SqlDataAdapter(selectPedidosTemporal, con)
+                    Dim dataSetMail As New DataSet
+                    Dim mensaje As String
+                    dataAdapterMail.Fill(dataSetMail, "mail")
+                    For index = 0 To dataSetMail.Tables("mail").Rows.Count - 1
+                        mensaje = mensaje & " Producto: " & dataSetMail.Tables("mail").Rows(index)("Item").ToString.Trim & " Cantidad: " & dataSetMail.Tables("mail").Rows(index)("Cantidad").ToString.Trim & enter
+                    Next
+                    enviarMail(Email, "Ingreso de Pedido", mensaje)
                     pnlNuevoPedidoFabrica.Visible = False
                     pnlPedidoCreado.Visible = True
                     If SqlAccion(deletePedidosTemporal) = True Then
@@ -1405,6 +1421,13 @@ Public Class _Default
         Dim item As String = row.Cells(0).Text, enter As String = Chr(13) & Chr(10)
         Dim nPedido As Integer = Vnum(lblNroPedidoCliente.Text.Trim)
         Dim nCliente As Integer = Vnum(lblNroCliente.Text.Trim)
+        Dim selectUsuarioPedido = "SELECT EMail FROM Usuarios WHERE idUsuario = " & nCliente
+        Dim dataAdapterMail As New SqlDataAdapter(selectUsuarioPedido, con)
+        Dim dataSetMail As New DataSet
+        dataAdapterMail.Fill(dataSetMail, "mail")
+        Dim mail As String = dataSetMail.Tables("mail").Rows(0)("EMail").ToString.Trim()
+        Dim mensaje As String = "El Administrador ha Quitado " & item & " de tu Lista de Pedido."
+        dataAdapterMail.Fill(dataSetMail, "mail")
         Dim consulta As String = "DELETE Pedidos_Detalle WHERE LTRIM(RTRIM(Item)) ='" & item & "' AND NPedido =" & nPedido
         lblErrorDpedidoCliente.Text = ""
         If (e.CommandName = "Quitar") Then
@@ -1412,8 +1435,242 @@ Public Class _Default
                 lblErrorDpedidoCliente.Text = "No se Pudo Quitar el Item de la Lista. Intente más Tarde."
                 Exit Sub
             End If
+            enviarMail(mail, "Item Eliminado", mensaje)
             mostrarDetallePedidoCliente(nPedido, nCliente)
         End If
+    End Sub
+#End Region
+#Region "Envio de Emails"
+    Function enviarMail(ByVal emailDestino As String, ByVal subjet As String, ByVal mensaje As String) As String
+        'Devuelve OK si se envio el mail caso contrario Devuelve el error.
+        Dim resultado As String = "OK"
+        Dim smtpServer As New SmtpClient()
+        Dim mail As New MailMessage()
+        Try
+            mail = New MailMessage()
+            mail.From = New MailAddress(Email, "")
+            mail.To.Add(emailDestino)
+            mail.Subject = subjet
+            mail.Body = mensaje
+            mail.IsBodyHtml = False
+            mail.Priority = MailPriority.Normal
+            If EmailActivo = "EmailGmail" Then
+                smtpServer.Credentials = New Net.NetworkCredential(Email, EmailPass)
+                smtpServer.Host = "smtp.gmail.com"
+                smtpServer.Port = 587
+                smtpServer.EnableSsl = True
+            Else
+                'Para EmailDonWeb
+                'smtpServer.Host = "localhost"
+                smtpServer.Credentials = New Net.NetworkCredential(Email, EmailPass)
+                smtpServer.Host = "dtcwin033.ferozo.com"
+                smtpServer.Port = 467
+                smtpServer.EnableSsl = True
+            End If
+            smtpServer.Send(mail)
+        Catch
+            resultado = Err.Description
+        End Try
+        mail.Dispose()
+        Return resultado
+    End Function
+#End Region
+#Region "Recuperacion de Contraseña"
+    Sub recuperarClave()
+        Dim usuario As String = txtUsuario.Text.Trim.ToUpper, emailEnviar As String, usuarioEnviar As String, mensaje As String, claveEnviar As String
+        Dim enter As String = Chr(13) & Chr(10)
+        If comprobar(usuario) = False Then
+            lblReenviarClave.Text = "**** El Usuario es Incorrecto Revisá Por Favor."
+            lblReenviarClave.Visible = True
+            Exit Sub
+        End If
+        Dim selectUsuario As String = "SELECT LTRIM(RTRIM(Nombre))+ ' ' + LTRIM(RTRIM(Apellido)) AS nombre_apellido, Clave, Email FROM Usuarios WHERE UPPER(LTRIM(RTRIM(Usuario)))='" & usuario & "'"
+        Dim dataAdapter As New SqlDataAdapter(selectUsuario, con)
+        Dim dataSet As New DataSet
+        'Traemos los datos
+        dataAdapter.Fill(dataSet, "recuperar")
+        If dataSet.Tables("recuperar").Rows.Count = 0 Then
+            lblReenviarClave.Text = "**** El Usuario es Incorrecto Revisá Por Favor."
+            lblReenviarClave.Visible = True
+            Exit Sub
+        End If
+        emailEnviar = dataSet.Tables("recuperar").Rows(0)("Email").ToString.Trim.ToLower
+        claveEnviar = dataSet.Tables("recuperar").Rows(0)("Clave").ToString.Trim
+        usuarioEnviar = dataSet.Tables("recuperar").Rows(0)("nombre_apellido").ToString.Trim
+        mensaje = "Hola " & usuarioEnviar & "," & enter & "Te escribimos desde , respondiendo a tu pedido de Recuperación de Clave" & enter & enter & "Su Usuario es: " & usuario & enter & "Su Clave es: " & claveEnviar & enter & enter & "Ya podes volver a Entrar y Armar tus Pedidos" & enter & "Saludos desde " & enter & enter & enter & enter & "(Por Favor no Responda esté Email, es automático. Gracias.)" & enter & enter
+        Dim ok As String = enviarMail(emailEnviar, ", Recuperación de Clave", mensaje)
+        If ok = "OK" Then
+            lblReenviarClave.Text = "**** Te Eviamos un Email Por Tu Clave."
+        Else
+            lblReenviarClave.Text = "**** Hubo un Error al Enviar el Email."
+        End If
+        lblReenviarClave.Visible = True
+    End Sub
+
+#End Region
+#Region "Cargar Usuarios"
+    Sub cargaUsuarios()
+        lblTipoUsuarios.Text = Session("tipoUsuarioAbm")
+        lblErrorAbmUsuarios.Text = ""
+        txtUsuarioFiltrar.Text = txtUsuarioFiltrar.Text.Trim()
+        arreglarCampo(txtUsuarioFiltrar)
+        Dim filtro As String
+        If txtUsuarioFiltrar.Text <> "" Then
+            filtro = " WHERE Usuario LIKE '%" & txtUsuarioFiltrar.Text & "%' "
+        End If
+        Dim selectUsuarios As String
+        selectUsuarios = "SELECT LTRIM(RTRIM(Usuario)) AS Usuario, LTRIM(RTRIM(EMail)) AS EMail, LTRIM(RTRIM(Nombre))+ ' ' + LTRIM(RTRIM(Apellido)) AS NombreApellido, (CASE WHEN Activo=1 THEN 'Activo' ELSE 'Inactivo' END) AS Activo FROM " & Session("tipoUsuarioAbm") & filtro & " ORDER BY Usuario"
+        Dim dataAdapter As New SqlDataAdapter(selectUsuarios, con)
+        Dim dataSet As New DataSet
+        dataAdapter.Fill(dataSet, "usuarios")
+        gvAbmUsuarios.DataSource = dataSet.Tables("usuarios")
+        gvAbmUsuarios.DataBind()
+        If Session("tipoUsuarioAbm") = "Administradores" Then
+            gvAbmUsuarios.Columns(6).Visible = False
+        Else
+            gvAbmUsuarios.Columns(6).Visible = True
+        End If
+        If dataSet.Tables("usuarios").Rows.Count = 0 Then
+            lblErrorAbmUsuarios.Text = "No hay Usuarios o Hubo un Error al Cargarlos. Reintente más Tarde."
+            lblErrorAbmUsuarios.Visible = True
+            gvAbmUsuarios.Visible = False
+        Else
+            gvAbmUsuarios.Visible = True
+        End If
+    End Sub
+#End Region
+#Region "Accion Botones gvAbmUsuarios"
+    Sub accionBotenesgvAbmUsuarios(ByVal e As GridViewCommandEventArgs)
+        Dim index As Integer = Convert.ToInt32(e.CommandArgument)
+        Dim row As GridViewRow = gvAbmUsuarios.Rows(index)
+        lblUsuarioAccion.Text = row.Cells(0).Text
+        lblEmailAccion.Text = row.Cells(1).Text
+        Select Case e.CommandName
+            Case "Eliminar"
+                If MsgBox("¿Está seguro de eliminar este Usuario?", MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then
+                    lblAccionMotivo.Text = "Eliminar"
+                End If
+            Case "Desactivar"
+                If MsgBox("¿Está seguro de Desactivar este Usuario?", MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then
+                    lblAccionMotivo.Text = "Desactivar"
+                End If
+            Case "Admin"
+                If MsgBox("¿Está seguro dar Permiso de Administrador al Usuario?", MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then
+                    If YaExisteSql("Select idAdmin FROM Administradores WHERE Email='" & lblEmailAccion.Text & "'") Then
+                        lblErrorAbmUsuarios.Text = "El Usuario ya es Administrador."
+                        lblErrorAbmUsuarios.Visible = True
+                        Exit Sub
+                    End If
+                    If YaExisteSql("SELECT idAdmin FROM Administradores WHERE Usuario='" & lblUsuarioAccion.Text & "'") Then
+                        lblErrorAbmUsuarios.Text = "El Usuario ya es Administrador."
+                        lblErrorAbmUsuarios.Visible = True
+                        Exit Sub
+                    End If
+                    lblAccionMotivo.Text = "Admin"
+                End If
+            Case Else
+                lblErrorAbmUsuarios.Text = "No se Pudeo Ejecutar la Accion Elegida."
+                lblErrorAbmUsuarios.Visible = True
+        End Select
+        pnlAbmUsuarios.Visible = False
+        pnlMotivo.Visible = True
+    End Sub
+#End Region
+#Region "Acciones Motivos ABM Usuarios"
+    Sub accionMotivoAbmUsuarios()
+        Dim accion As String = lblAccionMotivo.Text.Trim
+        Dim usuario As String = lblUsuarioAccion.Text.Trim
+        Dim email As String = lblEmailAccion.Text.ToLower.Trim
+        Dim mensaje As String = txtMotivo.Text
+        Dim queryEliminar As String = "DELETE " & Session("tipoUsuarioAbm") & " WHERE LTRIM(RTRIM(Usuario)) ='" & usuario & "'"
+        Dim queryDesactivar As String = "UPDATE " & Session("tipoUsuarioAbm") & " SET Activo = 0 WHERE LTRIM(RTRIM(Usuario)) ='" & usuario & "'"
+        Dim queryInsertAdmin As String = "INSERT INTO Administradores (Apellido, Nombre, tDoc , Documento, Usuario, Clave, Email, idProv , Localidad,Domicilio, Telefono, fNacimiento)"
+        Dim querySelectUsuario As String = "SELECT Apellido, Nombre, tDoc , Documento, Usuario, Clave, Email, idProv , Localidad,Domicilio, Telefono, fNacimiento FROM Usuarios WHERE LTRIM(RTRIM(Usuario)) ='" & usuario & "'"
+        If comprobar(txtMotivo.Text) = False Then
+            arreglarCampo(txtMotivo)
+            lblErrorMotivo.Text = "El Motivo contenía caracteres inválidos, fueron quitados"
+            lblErrorMotivo.Visible = True
+            Exit Sub
+        End If
+        Select Case accion
+            Case "Eliminar"
+                If SqlAccion(queryEliminar) = False Then
+                    lblErroresProductoEdit.Text = "Se ha producido un error al querer guardar tus datos."
+                    lblErroresProductoEdit.Visible = True
+                    Exit Sub
+                End If
+                enviarMail(email, ", Usuario Eliminado", mensaje)
+            Case "Desactivar"
+                If SqlAccion(queryDesactivar) = False Then
+                    lblErrorMotivo.Text = "Se ha producido un error al querer guardar tus datos."
+                    lblErrorMotivo.Visible = True
+                    Exit Sub
+                End If
+            Case "Admin"
+
+                If SqlAccion(queryInsertAdmin & querySelectUsuario) = False Then
+                    lblErrorMotivo.Text = "Se ha producido un error al querer guardar tus datos."
+                    lblErrorMotivo.Visible = True
+                    Exit Sub
+                End If
+                enviarMail(email, ", Usuario Administrador", mensaje)
+        End Select
+        pnlMotivo.Visible = False
+        pnlAbmUsuariosMenu.Visible = True
+    End Sub
+#End Region
+#Region "Generar Codigo Validar Email"
+    Public Function crearCodigo(ByVal cantCaracteres As Integer) As String
+        'Crear un código de tantos carteres como cantidad de caracteres le pasamenos, mezclando números y letras mayusculas
+        Dim strRand As String = Nothing, r As New Random, c As String, i As Integer
+        For index = 0 To cantCaracteres - 1
+            If Math.Round(r.Next(0, 2)) = 0 Then
+                c = Chr(Math.Round(r.Next(48, 58)))
+            Else
+                c = Chr(Math.Round(r.Next(65, 91)))
+            End If
+            strRand &= c
+        Next
+        Return strRand
+    End Function
+#End Region
+#Region "Validar Email y Terminar Registro"
+    Sub validarCodigo()
+        Dim sqlIngreso As String = Session("sqlIngreso") & " "
+        If sqlIngreso.Length < 10 Or sqlIngreso.IndexOf("INSERT") < 0 Then
+            lblErroresU.Text = "Hubo un error con el Código. Por Favor, trate de generar un nuevo código."
+            Exit Sub
+            lblErroresU.Visible = True
+            pnlValidarMail.Visible = False
+            pnlRegistrarse.Visible = True
+        End If
+        If txtValidar.Text.Trim.ToUpper <> Session("codigo") Then
+            lblErrorCodidoValidar.Visible = True
+            Exit Sub
+        End If
+        'Si pasa la Validacion lo Insertanos en la DB
+        If SqlAccion(sqlIngreso) = False Then
+            lblErroresU.Text = "Hubo un error al tratar de validar el Código. Por Favor, trate de generar un nuevo código."
+            lblErroresU.Visible = True
+            Exit Sub
+        End If
+        Session("idUsuario") = Vnum(LeeUnCampo("SELECT TOP 1 idUsuario FROM usuarios WHERE Usuario='" & Session("Usuario") & "'and Clave='" & Session("Password") & "' ", "idUsuario"))
+
+        Dim mensaje As String, xusuario As String = Session("ApellidoYNombre"), en As String = Chr(13) & Chr(10)
+        mensaje = "Bienvenido " & xusuario & " a , Equipamientos Informaticos." & en & en & "Te damos una cordial Bienvenida a ." & en & en & "Tu usuario es " & " " & Session("Usuario") & " " & en & en & "Tu clave es " & " " & Session("Password") & " " & en & en & "Ya podés loguearte para ver tus datos! !." & en & en
+
+        Dim okEnviarMail As String = enviarMail(Session("Email"), ", Registro de Usuario", mensaje)
+        If okEnviarMail = "OK" Then
+            lblBienvenido.Text = "Bienvenido " & Session("ApellidoYNombre") & "!!!" & en & en & "Te Eviamos un Email con Todos tus Datos."
+        Else
+            lblBienvenido.Text = "Bienvenido " & Session("ApellidoYNombre") & "!!!" & en & en & "Hubo un Error al Enviar el Email con Tus Datos de Usuario."
+        End If
+
+        lblBienvenido.Visible = True
+        limpiarCamposRegistroU()
+        pnlValidarMail.Visible = False
+        pnlBienvenido.Visible = True
+        btnRegistrarseVolverLoginU.Focus()
     End Sub
 #End Region
     Protected Sub btnEntrar_Click(sender As Object, e As ImageClickEventArgs) Handles btnEntrar.Click
@@ -1494,7 +1751,7 @@ Public Class _Default
     Protected Sub btnTodosLosPedidos_Click(sender As Object, e As ImageClickEventArgs) Handles btnTodosLosPedidos.Click
         pnlPedidosFabrica.Visible = False
         pnlHistorico.Visible = True
-        CargaHistorico()
+        cargaHistorico()
     End Sub
 
     Protected Sub btnEntrarAdmin_Click(sender As Object, e As ImageClickEventArgs) Handles btnEntrarAdmin.Click
@@ -1640,5 +1897,72 @@ Public Class _Default
 
     Protected Sub gvDetallePedidoCliente_RowCommand(sender As Object, e As GridViewCommandEventArgs) Handles gvDetallePedidoCliente.RowCommand
         quitarItemCliente(e)
+    End Sub
+
+    Protected Sub btnTerminarAbmUsuarios_Click(sender As Object, e As ImageClickEventArgs) Handles btnTerminarAbmUsuarios.Click
+        pnlAbmUsuarios.Visible = False
+        pnlAbmUsuariosMenu.Visible = True
+    End Sub
+
+    Protected Sub btnAbmUsuarios_Click(sender As Object, e As ImageClickEventArgs) Handles btnAbmUsuariosMenu.Click
+        pnlAreaUsuario.Visible = False
+        pnlAbmUsuariosMenu.Visible = True
+    End Sub
+
+    Protected Sub btnFiltrarUsuario_Click(sender As Object, e As ImageClickEventArgs) Handles btnFiltrarUsuario.Click
+        cargaUsuarios()
+    End Sub
+
+    Protected Sub btnActulizarAbmUsuarios_Click(sender As Object, e As ImageClickEventArgs) Handles btnActulizarAbmUsuarios.Click
+        cargaUsuarios()
+    End Sub
+
+    Protected Sub gvAbmUsuarios_RowCommand(sender As Object, e As GridViewCommandEventArgs) Handles gvAbmUsuarios.RowCommand
+        accionBotenesgvAbmUsuarios(e)
+    End Sub
+
+    Protected Sub btnCancelarAbmUsuarios_Click(sender As Object, e As ImageClickEventArgs) Handles btnCancelarAbmUsuarios.Click
+        pnlMotivo.Visible = False
+        pnlAbmUsuarios.Visible = True
+        cargaUsuarios()
+    End Sub
+
+    Protected Sub btnConfirmarAbmUsuarios_Click(sender As Object, e As ImageClickEventArgs) Handles btnConfirmarAbmUsuarios.Click
+        accionMotivoAbmUsuarios()
+    End Sub
+
+    Protected Sub btnValidarCodigo_Click(sender As Object, e As EventArgs) Handles btnValidarCodigo.Click
+        validarCodigo()
+    End Sub
+
+    Protected Sub btnRegresarRegistro_Click(sender As Object, e As EventArgs) Handles btnRegresarRegistro.Click
+        pnlValidarMail.Visible = False
+        txtValidar.Text = ""
+        pnlRegistrarse.Visible = True
+    End Sub
+
+    Protected Sub btnCancelarRegistro_Click(sender As Object, e As ImageClickEventArgs) Handles btnCancelarRegistro.Click
+        pnlValidarMail.Visible = False
+        txtValidar.Text = ""
+        pnlRegistrarse.Visible = True
+    End Sub
+
+    Protected Sub bntTerminarMenuUsuarios_Click(sender As Object, e As ImageClickEventArgs) Handles bntTerminarMenuUsuarios.Click
+        pnlAbmUsuariosMenu.Visible = False
+        pnlAreaUsuario.Visible = True
+    End Sub
+
+    Protected Sub ImageButton1_Click(sender As Object, e As ImageClickEventArgs) Handles btnAbmUsuarios.Click
+        Session("tipoUsuarioAbm") = "Usuarios"
+        cargaUsuarios()
+        pnlAbmUsuariosMenu.Visible = False
+        pnlAbmUsuarios.Visible = True
+    End Sub
+
+    Protected Sub btnAbmUsuariosAdmin_Click(sender As Object, e As ImageClickEventArgs) Handles btnAbmUsuariosAdmin.Click
+        Session("tipoUsuarioAbm") = "Administradores"
+        cargaUsuarios()
+        pnlAbmUsuariosMenu.Visible = False
+        pnlAbmUsuarios.Visible = True
     End Sub
 End Class
